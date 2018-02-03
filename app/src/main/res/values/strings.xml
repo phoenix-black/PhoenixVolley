@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">PhoenixVolley</string>
+
+    <!-- PROGRESS DIALOG -->
+    <string name="progress_outer_image">Outer Image</string>
+    <string name="progress_inner_image">Inner Image</string>
+
+    <!-- SERVER -->
+    <string name="no_network_connection" translatable="false">No network connection found</string>
+    <string name="generic_server_down" translatable="false">Server down</string>
+    <string name="generic_server_timeout" translatable="false">Server Timeout</string>
+    <string name="generic_error" translatable="false">Unexpected Error</string>
+    <string name="no_internet" translatable="false">No internet</string>
+    <string name="parsing_failed" translatable="false">Parsing Failure</string>
+    <string name="auth_failed" translatable="false">Authentication Failure</string>
+
+    <string name="no_network_connection_code" translatable="false">SEREC01</string>
+    <string name="generic_server_down_code" translatable="false">SEREC02</string>
+    <string name="generic_server_timeout_code" translatable="false">SERER03</string>
+    <string name="generic_error_code" translatable="false">SEREC04</string>
+    <string name="no_internet_code" translatable="false">SEREC05</string>
+    <string name="parsing_failed_code" translatable="false">SEREC06</string>
+    <string name="auth_failed_code" translatable="false">SEREC07</string>
+    <string name="title_activity_test_maps">Map</string>
+</resources>

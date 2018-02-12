@@ -11,9 +11,13 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 
+import org.apache.commons.io.FileUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -25,6 +29,9 @@ public abstract class VolleyPost {
     private static String TAG = VolleyPost.class.getSimpleName();
     private Response.Listener<JSONObject> volleyResponseListener;
     private VolleyErrorListener volleyErrorListener;
+
+    public static String PARAM_VIDEO_KEY = "video_key";
+    public static String PARAM_VIDEO_FILE = "video_file";
 
     public VolleyPost(Context context){
         this._context = context;
@@ -78,7 +85,7 @@ public abstract class VolleyPost {
      * @throws NullPointerException
      */
 
-    public void submitRequest(Context context, Map<String, String> params, String httpPostURL,
+    public static void submitRequest(Context context, Map<String, String> params, String httpPostURL,
                               Response.Listener<JSONObject> responseListener,
                               Response.ErrorListener errorListener) throws NullPointerException {
 
@@ -121,6 +128,145 @@ public abstract class VolleyPost {
 
         RequestQueue requestQueue = Volley.newRequestQueue(context);
         requestQueue.add(httpRequest);
+
+    }
+
+
+    private static byte[] getFileByteArray(File file){
+        try {
+            return FileUtils.readFileToByteArray(file);
+        }catch (IOException e){
+            e.printStackTrace();
+            Log.e("Upload Error","File not found");
+            return null;
+        }
+    }
+
+    /**
+     *
+     * @param context
+     * @param params
+     * @param videoKey
+     * @param videoFile
+     * @param httpPostURL
+     * @throws NullPointerException
+     */
+
+    public void submitVideoRequest(Context context, Map<String, String> params,
+                                   String videoKey,
+                                   File videoFile,
+                                   String httpPostURL) throws NullPointerException {
+
+        submitVideoRequest(context,params,videoKey,videoFile,httpPostURL,volleyResponseListener,volleyErrorListener,-1);
+
+    }
+
+
+
+    /**
+     *
+     * @param context
+     * @param params
+     * @param videoKey
+     * @param videoFile
+     * @param httpPostURL
+     * @param retryTimeMilliSec
+     * @throws NullPointerException
+     */
+
+    public void submitVideoRequest(Context context, Map<String, String> params,
+                                   String videoKey,
+                                   File videoFile,
+                                   String httpPostURL,
+                                   int retryTimeMilliSec ) throws NullPointerException {
+
+
+        submitVideoRequest(context,params,videoKey,videoFile,httpPostURL,volleyResponseListener,volleyErrorListener,retryTimeMilliSec);
+
+    }
+
+    /**
+     *
+     * @param context
+     * @param params
+     * @param videoKey
+     * @param videoFile
+     * @param httpPostURL
+     * @param responseListener
+     * @param errorListener
+     * @throws NullPointerException
+     */
+
+    public static void submitVideoRequest(Context context, Map<String, String> params,
+                                   String videoKey,
+                                   File videoFile,
+                                   String httpPostURL,
+                              Response.Listener<JSONObject> responseListener,
+                              Response.ErrorListener errorListener) throws NullPointerException {
+
+
+        submitVideoRequest(context,params,videoKey,videoFile,httpPostURL,responseListener,errorListener,-1);
+
+    }
+
+
+
+    /**
+     *
+     * @param context
+     * @param parameters
+     * @param videoKey
+     * @param videoFile
+     * @param httpPostURL
+     * @param retryTimeMilliSec
+     */
+
+    private static void submitVideoRequest(Context context,
+                                    final Map<String, String> parameters,
+                                    final String videoKey,
+                                    final File videoFile,
+                                    String httpPostURL,
+                                    Response.Listener<JSONObject> responseListener,
+                                    Response.ErrorListener errorListener,
+                                    int retryTimeMilliSec) throws NullPointerException {
+
+        VolleyJsonMultipartRequest volleyJSONMultipartRequest = new VolleyJsonMultipartRequest(Request.Method.POST,
+                httpPostURL,
+                responseListener,
+                errorListener){
+
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params = parameters;
+                return params;
+            }
+
+            @Override
+            protected Map<String, DataPart> getByteData() {
+                Map<String, DataPart> params = new HashMap<>();
+                params.put(videoKey, new DataPart(videoFile.getName(),getFileByteArray(videoFile) , "video/*"));
+                return params;
+            }
+        };
+
+        if(retryTimeMilliSec != -1 ) {
+
+            // NOTE: Set minimum retry time to 5 seconds
+            if(retryTimeMilliSec <= 5000){
+                Log.w(TAG,"Input retry time "+ retryTimeMilliSec +" is invalid. Setting retry time to 5 seconds");
+                retryTimeMilliSec = 5000;
+            }
+
+            volleyJSONMultipartRequest.setRetryPolicy(new DefaultRetryPolicy(
+                    retryTimeMilliSec,
+                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        }
+
+
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+        requestQueue.add(volleyJSONMultipartRequest);
 
     }
 

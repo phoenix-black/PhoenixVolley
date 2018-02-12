@@ -131,20 +131,8 @@ public abstract class VolleyPost {
 
     }
 
-
-    private static byte[] getFileByteArray(File file){
-        try {
-            return FileUtils.readFileToByteArray(file);
-        }catch (IOException e){
-            e.printStackTrace();
-            Log.e("Upload Error","File not found");
-            return null;
-        }
-    }
-
     /**
      *
-     * @param context
      * @param params
      * @param videoKey
      * @param videoFile
@@ -152,12 +140,12 @@ public abstract class VolleyPost {
      * @throws NullPointerException
      */
 
-    public void submitVideoRequest(Context context, Map<String, String> params,
+    public void submitVideoRequest(Map<String, String> params,
                                    String videoKey,
                                    File videoFile,
-                                   String httpPostURL) throws NullPointerException {
+                                   String httpPostURL) throws NullPointerException, IOException {
 
-        submitVideoRequest(context,params,videoKey,videoFile,httpPostURL,volleyResponseListener,volleyErrorListener,-1);
+        submitVideoRequest(_context,params,videoKey,videoFile,httpPostURL,volleyResponseListener,volleyErrorListener,-1);
 
     }
 
@@ -165,7 +153,6 @@ public abstract class VolleyPost {
 
     /**
      *
-     * @param context
      * @param params
      * @param videoKey
      * @param videoFile
@@ -174,14 +161,14 @@ public abstract class VolleyPost {
      * @throws NullPointerException
      */
 
-    public void submitVideoRequest(Context context, Map<String, String> params,
+    public void submitVideoRequest(Map<String, String> params,
                                    String videoKey,
                                    File videoFile,
                                    String httpPostURL,
-                                   int retryTimeMilliSec ) throws NullPointerException {
+                                   int retryTimeMilliSec ) throws NullPointerException, IOException {
 
 
-        submitVideoRequest(context,params,videoKey,videoFile,httpPostURL,volleyResponseListener,volleyErrorListener,retryTimeMilliSec);
+        submitVideoRequest(_context,params,videoKey,videoFile,httpPostURL,volleyResponseListener,volleyErrorListener,retryTimeMilliSec);
 
     }
 
@@ -202,7 +189,7 @@ public abstract class VolleyPost {
                                    File videoFile,
                                    String httpPostURL,
                               Response.Listener<JSONObject> responseListener,
-                              Response.ErrorListener errorListener) throws NullPointerException {
+                              Response.ErrorListener errorListener) throws NullPointerException, IOException {
 
 
         submitVideoRequest(context,params,videoKey,videoFile,httpPostURL,responseListener,errorListener,-1);
@@ -228,12 +215,12 @@ public abstract class VolleyPost {
                                     String httpPostURL,
                                     Response.Listener<JSONObject> responseListener,
                                     Response.ErrorListener errorListener,
-                                    int retryTimeMilliSec) throws NullPointerException {
+                                    int retryTimeMilliSec) throws NullPointerException, IOException {
 
         VolleyJsonMultipartRequest volleyJSONMultipartRequest = new VolleyJsonMultipartRequest(Request.Method.POST,
                 httpPostURL,
                 responseListener,
-                errorListener){
+                errorListener) {
 
             @Override
             protected Map<String, String> getParams() {
@@ -243,9 +230,9 @@ public abstract class VolleyPost {
             }
 
             @Override
-            protected Map<String, DataPart> getByteData() {
+            protected Map<String, DataPart> getByteData() throws IOException {
                 Map<String, DataPart> params = new HashMap<>();
-                params.put(videoKey, new DataPart(videoFile.getName(),getFileByteArray(videoFile) , "video/*"));
+                params.put(videoKey, new DataPart(videoFile.getName(),FileUtils.readFileToByteArray(videoFile) , "video/*"));
                 return params;
             }
         };

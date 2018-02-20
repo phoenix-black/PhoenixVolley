@@ -131,6 +131,13 @@ public abstract class VolleyPost {
 
     }
 
+
+    /*******
+     *
+     * ******************************** VIDEO UPLOAD ******************************************************
+     *
+     */
+
     /**
      *
      * @param params
@@ -232,7 +239,9 @@ public abstract class VolleyPost {
             @Override
             protected Map<String, DataPart> getByteData() throws IOException {
                 Map<String, DataPart> params = new HashMap<>();
-                params.put(videoKey, new DataPart(videoFile.getName(),FileUtils.readFileToByteArray(videoFile) , "video/*"));
+                if(videoFile!=null && videoFile.exists()) {
+                    params.put(videoKey, new DataPart(videoFile.getName(), FileUtils.readFileToByteArray(videoFile), "video/*"));
+                }
                 return params;
             }
         };

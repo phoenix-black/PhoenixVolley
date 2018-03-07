@@ -246,20 +246,29 @@ public abstract class VolleyPost {
             }
         };
 
-        if(retryTimeMilliSec != -1 ) {
+/*        if(retryTimeMilliSec != -1 ) {
 
             // NOTE: Set minimum retry time to 5 seconds
-            if(retryTimeMilliSec <= 5000){
+            if(retryTimeMilliSec <= 10000){
                 Log.w(TAG,"Input retry time "+ retryTimeMilliSec +" is invalid. Setting retry time to 5 seconds");
-                retryTimeMilliSec = 5000;
+                retryTimeMilliSec = 10000;
             }
 
             volleyJSONMultipartRequest.setRetryPolicy(new DefaultRetryPolicy(
                     retryTimeMilliSec,
                     DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                     DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        }*/
+
+        if(retryTimeMilliSec <= 15000){
+            Log.w(TAG,"Input retry time "+ retryTimeMilliSec +" is invalid. Setting retry time to 5 seconds");
+            retryTimeMilliSec = 15000;
         }
 
+        volleyJSONMultipartRequest.setRetryPolicy(new DefaultRetryPolicy(
+                retryTimeMilliSec,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
         RequestQueue requestQueue = Volley.newRequestQueue(context);
         requestQueue.add(volleyJSONMultipartRequest);

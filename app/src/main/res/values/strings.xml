@@ -1,9 +1,7 @@
 <resources>
-    <string name="app_name">PhoenixVolley</string>
-
     <!-- PROGRESS DIALOG -->
-    <string name="progress_outer_image">Outer Image</string>
-    <string name="progress_inner_image">Inner Image</string>
+    <string name="v_progress_outer_image">Outer Image</string>
+    <string name="v_progress_inner_image">Inner Image</string>
 
     <!-- SERVER -->
     <string name="no_network_connection" translatable="false">No network connection found</string>

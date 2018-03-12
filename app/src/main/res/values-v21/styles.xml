@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="PxDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
+    <style name="PxVolleyDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:colorPrimary">#000000</item>
         <item name="android:colorAccent">#00ffff</item>

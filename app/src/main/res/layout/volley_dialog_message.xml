@@ -10,7 +10,7 @@
     android:layout_gravity="center"
     android:padding="20dp"
     android:id="@+id/dialog_message"
-    android:background="@drawable/shape_rounded_rect_view">
+    android:background="@drawable/v_shape_rounded_rect_view">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="vertical"
@@ -28,8 +28,8 @@
                 android:layout_height="32dp"
                 android:layout_marginBottom="8dp"
                 android:id="@+id/progress_smallInnerImage"
-                android:src="@drawable/widget_icon_info_2"
-                android:contentDescription="@string/progress_inner_image"
+                android:src="@drawable/v_widget_icon_info_2"
+                android:contentDescription="@string/v_progress_inner_image"
                 android:layout_centerInParent="true"
                 android:layout_alignParentTop="true"/>
         </RelativeLayout>

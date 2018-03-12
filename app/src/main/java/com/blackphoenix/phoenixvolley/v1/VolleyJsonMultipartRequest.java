@@ -5,6 +5,8 @@ package com.blackphoenix.phoenixvolley.v1;
  */
 
 
+import android.util.Log;
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.ParseError;
@@ -30,6 +32,8 @@ import java.util.Map;
  * Created by Angga on 27/04/2016 12.05.
  */
 public class VolleyJsonMultipartRequest extends Request<JSONObject> {
+
+    private static String LOG_TITLE = VolleyJsonMultipartRequest.class.getSimpleName();
     private final String twoHyphens = "--";
     private final String lineEnd = "\r\n";
     private final String boundary = "apiclient-" + System.currentTimeMillis();
@@ -124,14 +128,14 @@ public class VolleyJsonMultipartRequest extends Request<JSONObject> {
         try {
             String jsonString = new String(response.data,
                     HttpHeaderParser.parseCharset(response.headers));
-            //Log.e(LOG_TITLE,"Success Response 1");
+            Log.e(LOG_TITLE,"Success Response 1 "+jsonString);
             return Response.success(new JSONObject(jsonString),
                     HttpHeaderParser.parseCacheHeaders(response));
         } catch (UnsupportedEncodingException e) {
-          //  Log.e(LOG_TITLE,"Error Response 1");
+            Log.e(LOG_TITLE,"Error Response 1 " +e.getMessage());
             return Response.error(new ParseError(e));
         } catch (JSONException je) {
-          //  Log.e(LOG_TITLE,"Error Response 2");
+            Log.e(LOG_TITLE,"Error Response 2 "+je.getMessage());
             return Response.error(new ParseError(je));
         }
     }

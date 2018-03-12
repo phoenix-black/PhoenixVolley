@@ -1,4 +1,4 @@
-package com.blackphoenix.phoenixvolley.v1.widgets.messagedialog;
+package com.blackphoenix.phoenixvolley.v1.widgets.advancedmessagedialog;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -21,10 +21,10 @@ import com.blackphoenix.phoenixvolley.R;
  * Created by Praba on 08-02-2017.
  */
 
-public abstract class MessageDialog extends AlertDialog {
+public abstract class VolleyAdvancedMessageDialog extends AlertDialog {
 
     private TextView textViewContent;
-    MessageDialogInterface progressDialogDataInterface;
+    VolleyAdvancedMessageDialogInterface progressDialogDataInterface;
 
     private String progressText = "Please Wait...";
     long WAIT_TIME = 180*1000;
@@ -32,29 +32,29 @@ public abstract class MessageDialog extends AlertDialog {
 
     int iconThemeResID = -1;
 
-    public abstract void onInterfaceReady(MessageDialogInterface dialogInterface);
+    public abstract void onInterfaceReady(VolleyAdvancedMessageDialogInterface dialogInterface);
     public abstract void onTimedOut();
     public abstract void onDismissed();
 
-    public MessageDialog(Context context, String text) {
-        super(context, R.style.PxDialogTheme);
+    public VolleyAdvancedMessageDialog(Context context, String text) {
+        super(context, R.style.PxVolleyDialogTheme);
         this.progressText = text;
         this._context = context;
     }
 
-    public MessageDialog(Context context, int themeResId, String text) {
+    public VolleyAdvancedMessageDialog(Context context, int themeResId, String text) {
         super(context, themeResId);
         this.progressText = text;
         this._context = context;
     }
 
-    public MessageDialog(Context context, int themeResId) {
-        super(context, R.style.PxDialogTheme);
+    public VolleyAdvancedMessageDialog(Context context, int themeResId) {
+        super(context, R.style.PxVolleyDialogTheme);
         iconThemeResID = themeResId;
         this._context = context;
     }
 
-    public MessageDialog(Context context, int themeResId, String text, long timeout /* TIMEOUT in Milliseconds*/) {
+    public VolleyAdvancedMessageDialog(Context context, int themeResId, String text, long timeout /* TIMEOUT in Milliseconds*/) {
         super(context, themeResId);
         this.progressText = text;
         this.WAIT_TIME = timeout;
@@ -71,7 +71,7 @@ public abstract class MessageDialog extends AlertDialog {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.dialog_message);
+        setContentView(R.layout.volley_dialog_message);
         setCanceledOnTouchOutside(false);
         setCancelable(false);
 
@@ -79,7 +79,7 @@ public abstract class MessageDialog extends AlertDialog {
         textViewContent = (TextView)findViewById(R.id.dialogMessage_content);
         textViewContent.setText(progressText);
 
-        progressDialogDataInterface = new MessageDialogInterface() {
+        progressDialogDataInterface = new VolleyAdvancedMessageDialogInterface() {
             @Override
             public void updateData(String newData) {
                 textViewContent.setText(newData);
@@ -87,7 +87,7 @@ public abstract class MessageDialog extends AlertDialog {
         };
 
 
-        //final ShapeDrawable drawable = ShapeDrawable.createFromResourceStream(_context.getResources(), R.drawable.shape_rounded_rect_view, wrapper.getTheme());
+        //final ShapeDrawable drawable = ShapeDrawable.createFromResourceStream(_context.getResources(), R.drawable.v_shape_rounded_rect_view, wrapper.getTheme());
 
 
         final LinearLayout parentLayout = findViewById(R.id.dialog_message);
@@ -95,11 +95,11 @@ public abstract class MessageDialog extends AlertDialog {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             if(iconThemeResID != -1) {
                 final ContextThemeWrapper wrapper = new ContextThemeWrapper(_context, iconThemeResID);
-                Drawable drawable = (Drawable) _context.getResources().getDrawable(R.drawable.shape_rounded_rect_view, wrapper.getTheme()); //(GradientDrawable) parentLayout.getBackground();
+                Drawable drawable = (Drawable) _context.getResources().getDrawable(R.drawable.v_shape_rounded_rect_view, wrapper.getTheme()); //(GradientDrawable) parentLayout.getBackground();
                 parentLayout.setBackground(drawable);
             } else {
                 final ContextThemeWrapper wrapper = new ContextThemeWrapper(_context, R.style.IconTheme);
-                Drawable drawable = (Drawable) _context.getResources().getDrawable(R.drawable.shape_rounded_rect_view, wrapper.getTheme()); //(GradientDrawable) parentLayout.getBackground();
+                Drawable drawable = (Drawable) _context.getResources().getDrawable(R.drawable.v_shape_rounded_rect_view, wrapper.getTheme()); //(GradientDrawable) parentLayout.getBackground();
                 parentLayout.setBackground(drawable);
             }
 
@@ -136,7 +136,7 @@ public abstract class MessageDialog extends AlertDialog {
 
     }
 
-    public MessageDialogInterface getProgressDialogDataInterface(){
+    public VolleyAdvancedMessageDialogInterface getProgressDialogDataInterface(){
         return this.progressDialogDataInterface;
     }
 

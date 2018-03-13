@@ -240,7 +240,9 @@ public abstract class VolleyPost {
             protected Map<String, DataPart> getByteData() throws IOException {
                 Map<String, DataPart> params = new HashMap<>();
                 if(videoFile!=null && videoFile.exists()) {
-                    params.put(videoKey, new DataPart(videoFile.getName(), FileUtils.readFileToByteArray(videoFile), "video/*"));
+                    //params.put(videoKey, new DataPart(videoFile.getName(), FileUtils.readFileToByteArray(videoFile), "video/*"));
+                    //multipart/form-data
+                    params.put(videoKey, new DataPart(videoFile.getName(), FileUtils.readFileToByteArray(videoFile), "multipart/form-data"));
                 }
                 return params;
             }

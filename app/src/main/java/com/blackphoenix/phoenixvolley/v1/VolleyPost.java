@@ -29,6 +29,7 @@ public abstract class VolleyPost {
     private static String TAG = VolleyPost.class.getSimpleName();
     private Response.Listener<JSONObject> volleyResponseListener;
     private VolleyErrorListener volleyErrorListener;
+    private boolean isRetryPolicyEnabled = true;
 
     public static String PARAM_VIDEO_KEY = "video_key";
     public static String PARAM_VIDEO_FILE = "video_file";
@@ -52,6 +53,10 @@ public abstract class VolleyPost {
 
     }
 
+    public void setRetryPolicyEnabled(boolean status){
+        this.isRetryPolicyEnabled = status;
+    }
+
     /**
      *
      * @param params
@@ -60,7 +65,7 @@ public abstract class VolleyPost {
      */
 
     public void submitRequest(Map<String, String> params, String httpPostURL) throws NullPointerException {
-        submitRequest(_context,params,httpPostURL,volleyResponseListener,volleyErrorListener,-1);
+        submitRequest(_context,params,httpPostURL,volleyResponseListener,volleyErrorListener,-1,isRetryPolicyEnabled);
     }
 
     /**
@@ -72,7 +77,7 @@ public abstract class VolleyPost {
      */
 
     public void submitRequest(Map<String, String> params, String httpPostURL, int retryTimeMillSec) throws NullPointerException {
-        submitRequest(_context,params,httpPostURL,volleyResponseListener,volleyErrorListener,retryTimeMillSec);
+        submitRequest(_context,params,httpPostURL,volleyResponseListener,volleyErrorListener,retryTimeMillSec,isRetryPolicyEnabled);
     }
 
     /**
@@ -89,7 +94,26 @@ public abstract class VolleyPost {
                               Response.Listener<JSONObject> responseListener,
                               Response.ErrorListener errorListener) throws NullPointerException {
 
-        submitRequest(context,params,httpPostURL,responseListener,errorListener,-1);
+        submitRequest(context,params,httpPostURL,responseListener,errorListener,-1,true);
+
+    }
+
+    /**
+     *
+     * @param context
+     * @param params
+     * @param httpPostURL
+     * @param responseListener
+     * @param errorListener
+     * @param isRetryPolicyEnabled
+     * @throws NullPointerException
+     */
+
+    public static void submitRequest(Context context, Map<String, String> params, String httpPostURL,
+                                     Response.Listener<JSONObject> responseListener,
+                                     Response.ErrorListener errorListener, boolean isRetryPolicyEnabled) throws NullPointerException {
+
+        submitRequest(context,params,httpPostURL,responseListener,errorListener,-1,isRetryPolicyEnabled);
 
     }
 
@@ -101,30 +125,39 @@ public abstract class VolleyPost {
      * @param responseListener
      * @param errorListener
      * @param retryTimeMilliSec
+     * @param isRetryPolicyEnabled
      * @throws NullPointerException
      */
 
     public static void submitRequest(Context context, Map<String, String> params, String httpPostURL,
                               Response.Listener<JSONObject> responseListener,
-                              Response.ErrorListener errorListener, int retryTimeMilliSec) throws NullPointerException {
+                              Response.ErrorListener errorListener, int retryTimeMilliSec, boolean isRetryPolicyEnabled) throws NullPointerException {
 
 
         VolleyJsonRequest httpRequest = new VolleyJsonRequest(Request.Method.POST, httpPostURL,
                 params, responseListener, errorListener);
 
-        if(retryTimeMilliSec != -1 ) {
+        if(isRetryPolicyEnabled) {
+            if(retryTimeMilliSec != -1 ) {
 
-            // NOTE: Set minimum retry time to 5 seconds
-            if(retryTimeMilliSec <= 5000){
-                Log.w(TAG,"Input retry time "+ retryTimeMilliSec +" is invalid. Setting retry time to 5 seconds");
-                retryTimeMilliSec = 5000;
+                // NOTE: Set minimum retry time to 5 seconds
+                if (retryTimeMilliSec <= 5000) {
+                    Log.w(TAG, "Input retry time " + retryTimeMilliSec + " is invalid. Setting retry time to 5 seconds");
+                    retryTimeMilliSec = 5000;
+                }
+
+                httpRequest.setRetryPolicy(new DefaultRetryPolicy(
+                        retryTimeMilliSec,
+                        DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                        DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
             }
-
+        } else {
             httpRequest.setRetryPolicy(new DefaultRetryPolicy(
-                    retryTimeMilliSec,
-                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                    0,
+                    0,
                     DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         }
+
 
         RequestQueue requestQueue = Volley.newRequestQueue(context);
         requestQueue.add(httpRequest);
@@ -152,7 +185,7 @@ public abstract class VolleyPost {
                                    File videoFile,
                                    String httpPostURL) throws NullPointerException, IOException {
 
-        submitVideoRequest(_context,params,videoKey,videoFile,httpPostURL,volleyResponseListener,volleyErrorListener,-1);
+        submitVideoRequest(_context,params,videoKey,videoFile,httpPostURL,volleyResponseListener,volleyErrorListener,-1,isRetryPolicyEnabled);
 
     }
 
@@ -175,7 +208,7 @@ public abstract class VolleyPost {
                                    int retryTimeMilliSec ) throws NullPointerException, IOException {
 
 
-        submitVideoRequest(_context,params,videoKey,videoFile,httpPostURL,volleyResponseListener,volleyErrorListener,retryTimeMilliSec);
+        submitVideoRequest(_context,params,videoKey,videoFile,httpPostURL,volleyResponseListener,volleyErrorListener,retryTimeMilliSec,isRetryPolicyEnabled);
 
     }
 
@@ -199,7 +232,34 @@ public abstract class VolleyPost {
                               Response.ErrorListener errorListener) throws NullPointerException, IOException {
 
 
-        submitVideoRequest(context,params,videoKey,videoFile,httpPostURL,responseListener,errorListener,-1);
+        submitVideoRequest(context,params,videoKey,videoFile,httpPostURL,responseListener,errorListener,-1,true);
+
+    }
+
+    /**
+     *
+     * @param context
+     * @param params
+     * @param videoKey
+     * @param videoFile
+     * @param httpPostURL
+     * @param responseListener
+     * @param errorListener
+     * @param isRetryPolicyEnabled
+     * @throws NullPointerException
+     * @throws IOException
+     */
+
+    public static void submitVideoRequest(Context context, Map<String, String> params,
+                                          String videoKey,
+                                          File videoFile,
+                                          String httpPostURL,
+                                          Response.Listener<JSONObject> responseListener,
+                                          Response.ErrorListener errorListener,
+                                          boolean isRetryPolicyEnabled) throws NullPointerException, IOException {
+
+
+        submitVideoRequest(context,params,videoKey,videoFile,httpPostURL,responseListener,errorListener,-1,isRetryPolicyEnabled);
 
     }
 
@@ -222,7 +282,8 @@ public abstract class VolleyPost {
                                     String httpPostURL,
                                     Response.Listener<JSONObject> responseListener,
                                     Response.ErrorListener errorListener,
-                                    int retryTimeMilliSec) throws NullPointerException, IOException {
+                                    int retryTimeMilliSec,
+                                           boolean isRetryPolicyEnabled) throws NullPointerException, IOException {
 
         VolleyJsonMultipartRequest volleyJSONMultipartRequest = new VolleyJsonMultipartRequest(Request.Method.POST,
                 httpPostURL,
@@ -262,15 +323,24 @@ public abstract class VolleyPost {
                     DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         }*/
 
-        if(retryTimeMilliSec <= 15000){
-            Log.w(TAG,"Input retry time "+ retryTimeMilliSec +" is invalid. Setting retry time to 5 seconds");
-            retryTimeMilliSec = 15000;
-        }
+        if(isRetryPolicyEnabled) {
 
-        volleyJSONMultipartRequest.setRetryPolicy(new DefaultRetryPolicy(
-                retryTimeMilliSec,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            if (retryTimeMilliSec <= 15000) {
+                Log.w(TAG, "Input retry time " + retryTimeMilliSec + " is invalid. Setting retry time to 5 seconds");
+                retryTimeMilliSec = 15000;
+            }
+
+
+            volleyJSONMultipartRequest.setRetryPolicy(new DefaultRetryPolicy(
+                    retryTimeMilliSec,
+                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        } else {
+            volleyJSONMultipartRequest.setRetryPolicy(new DefaultRetryPolicy(
+                    0,
+                    0,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        }
 
         RequestQueue requestQueue = Volley.newRequestQueue(context);
         requestQueue.add(volleyJSONMultipartRequest);

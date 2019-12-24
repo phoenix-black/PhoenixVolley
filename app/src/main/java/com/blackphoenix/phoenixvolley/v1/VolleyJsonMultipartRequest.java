@@ -42,6 +42,8 @@ public class VolleyJsonMultipartRequest extends Request<JSONObject> {
     private Response.ErrorListener mErrorListener;
     private Map<String, String> mHeaders;
 
+    private boolean isDebug = false;
+
     /**
      * Default constructor with predefined header and post method.
      *
@@ -128,14 +130,14 @@ public class VolleyJsonMultipartRequest extends Request<JSONObject> {
         try {
             String jsonString = new String(response.data,
                     HttpHeaderParser.parseCharset(response.headers));
-            Log.e(LOG_TITLE,"Success Response 1 "+jsonString);
+            debugLog("Success Response 1 "+jsonString);
             return Response.success(new JSONObject(jsonString),
                     HttpHeaderParser.parseCacheHeaders(response));
         } catch (UnsupportedEncodingException e) {
-            Log.e(LOG_TITLE,"Error Response 1 " +e.getMessage());
+            debugLog("Error Response 1 " +e.getMessage());
             return Response.error(new ParseError(e));
         } catch (JSONException je) {
-            Log.e(LOG_TITLE,"Error Response 2 "+je.getMessage());
+            debugLog("Error Response 2 "+je.getMessage());
             return Response.error(new ParseError(je));
         }
     }
@@ -329,5 +331,11 @@ public class VolleyJsonMultipartRequest extends Request<JSONObject> {
         public void setType(String type) {
             this.type = type;
         }
+    }
+
+
+    private void debugLog(String message){
+        if(isDebug)
+            Log.e(LOG_TITLE,message);
     }
 }

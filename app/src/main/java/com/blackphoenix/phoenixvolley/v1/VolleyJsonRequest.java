@@ -25,7 +25,10 @@ public class VolleyJsonRequest extends Request<JSONObject> {
 
     private Listener<JSONObject> listener;
     private Map<String, String> params;
-    public static final String LOG_TITLE = VolleyJsonRequest.class.getSimpleName();
+    private static final String LOG_TITLE = VolleyJsonRequest.class.getSimpleName();
+    private boolean isDebug = false;
+
+
 
     public VolleyJsonRequest(String url, Map<String, String> params,
                              Listener<JSONObject> reponseListener, ErrorListener errorListener) {
@@ -51,14 +54,14 @@ public class VolleyJsonRequest extends Request<JSONObject> {
         try {
             String jsonString = new String(response.data,
                     HttpHeaderParser.parseCharset(response.headers));
-            Log.e(LOG_TITLE,"Success Response 1 "+jsonString);
+            debugLog("Success Response 1 "+jsonString);
             return Response.success(new JSONObject(jsonString),
                     HttpHeaderParser.parseCacheHeaders(response));
         } catch (UnsupportedEncodingException e) {
-            Log.e(LOG_TITLE,"Error Response 1 " +e.getMessage());
+            debugLog("Error Response 1 " +e.getMessage());
             return Response.error(new ParseError(e));
         } catch (JSONException je) {
-            Log.e(LOG_TITLE,"Error Response 2 "+je.getMessage());
+            debugLog("Error Response 2 "+je.getMessage());
             return Response.error(new ParseError(je));
         }
     }
@@ -68,6 +71,15 @@ public class VolleyJsonRequest extends Request<JSONObject> {
         Log.e(LOG_TITLE,"Deliver Response");
         // TODO Auto-generated method stub
         listener.onResponse(response);
+    }
+
+    public void setDebugEnabled(boolean status){
+        this.isDebug = status;
+    }
+
+    private void debugLog(String message){
+        if(isDebug)
+            Log.e(LOG_TITLE,message);
     }
 
 }

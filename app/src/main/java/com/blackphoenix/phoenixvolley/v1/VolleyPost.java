@@ -30,6 +30,7 @@ public abstract class VolleyPost {
     private Response.Listener<JSONObject> volleyResponseListener;
     private VolleyErrorListener volleyErrorListener;
     private boolean isRetryPolicyEnabled = true;
+    private boolean isDebug = false;
 
     public static String PARAM_VIDEO_KEY = "video_key";
     public static String PARAM_VIDEO_FILE = "video_file";
@@ -55,6 +56,11 @@ public abstract class VolleyPost {
 
     public void setRetryPolicyEnabled(boolean status){
         this.isRetryPolicyEnabled = status;
+    }
+
+
+    public void setDebugEnabled(boolean status){
+        this.isDebug = status;
     }
 
     /**
@@ -136,6 +142,7 @@ public abstract class VolleyPost {
 
         VolleyJsonRequest httpRequest = new VolleyJsonRequest(Request.Method.POST, httpPostURL,
                 params, responseListener, errorListener);
+
 
         if(isRetryPolicyEnabled) {
             if(retryTimeMilliSec != -1 ) {

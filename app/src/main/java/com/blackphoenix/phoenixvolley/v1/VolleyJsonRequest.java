@@ -68,7 +68,7 @@ public class VolleyJsonRequest extends Request<JSONObject> {
 
     @Override
     protected void deliverResponse(JSONObject response) {
-        Log.e(LOG_TITLE,"Deliver Response");
+        debugLog("Deliver Response");
         // TODO Auto-generated method stub
         listener.onResponse(response);
     }

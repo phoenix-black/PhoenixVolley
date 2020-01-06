@@ -135,9 +135,17 @@ public class VolleyJsonMultipartRequest extends Request<JSONObject> {
                     HttpHeaderParser.parseCacheHeaders(response));
         } catch (UnsupportedEncodingException e) {
             debugLog("Error Response 1 " +e.getMessage());
+
+            if(isDebug)
+                e.printStackTrace();
+
             return Response.error(new ParseError(e));
         } catch (JSONException je) {
             debugLog("Error Response 2 "+je.getMessage());
+
+            if(isDebug)
+                je.printStackTrace();
+
             return Response.error(new ParseError(je));
         }
     }
@@ -333,6 +341,10 @@ public class VolleyJsonMultipartRequest extends Request<JSONObject> {
         }
     }
 
+
+    public void setDebugEnabled(boolean status){
+        this.isDebug = status;
+    }
 
     private void debugLog(String message){
         if(isDebug)

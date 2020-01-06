@@ -59,9 +59,17 @@ public class VolleyJsonRequest extends Request<JSONObject> {
                     HttpHeaderParser.parseCacheHeaders(response));
         } catch (UnsupportedEncodingException e) {
             debugLog("Error Response 1 " +e.getMessage());
+
+            if(isDebug)
+                e.printStackTrace();
+
             return Response.error(new ParseError(e));
         } catch (JSONException je) {
             debugLog("Error Response 2 "+je.getMessage());
+
+            if(isDebug)
+                je.printStackTrace();
+
             return Response.error(new ParseError(je));
         }
     }

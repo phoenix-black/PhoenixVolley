@@ -65,16 +65,22 @@ public abstract class VolleyPost {
 
     /**
      *
+     * Updated: 06/01/2020
+     *
      * @param params
      * @param httpPostURL
      * @throws NullPointerException
      */
 
     public void submitRequest(Map<String, String> params, String httpPostURL) throws NullPointerException {
-        submitRequest(_context,params,httpPostURL,volleyResponseListener,volleyErrorListener,-1,isRetryPolicyEnabled);
+        submitRequest(_context,params,httpPostURL,volleyResponseListener,volleyErrorListener,-1,isRetryPolicyEnabled,isDebug);
     }
 
+
     /**
+     *
+     * Updated: 06/01/2020
+     *
      *
      * @param params
      * @param httpPostURL
@@ -83,10 +89,12 @@ public abstract class VolleyPost {
      */
 
     public void submitRequest(Map<String, String> params, String httpPostURL, int retryTimeMillSec) throws NullPointerException {
-        submitRequest(_context,params,httpPostURL,volleyResponseListener,volleyErrorListener,retryTimeMillSec,isRetryPolicyEnabled);
+        submitRequest(_context,params,httpPostURL,volleyResponseListener,volleyErrorListener,retryTimeMillSec,isRetryPolicyEnabled,isDebug);
     }
 
     /**
+     *
+     * Updated: 06/01/2020
      *
      * @param context
      * @param params
@@ -100,11 +108,12 @@ public abstract class VolleyPost {
                               Response.Listener<JSONObject> responseListener,
                               Response.ErrorListener errorListener) throws NullPointerException {
 
-        submitRequest(context,params,httpPostURL,responseListener,errorListener,-1,true);
+        submitRequest(context,params,httpPostURL,responseListener,errorListener,-1,true, false);
 
     }
 
     /**
+     * Updated : 06/01/2020
      *
      * @param context
      * @param params
@@ -119,11 +128,39 @@ public abstract class VolleyPost {
                                      Response.Listener<JSONObject> responseListener,
                                      Response.ErrorListener errorListener, boolean isRetryPolicyEnabled) throws NullPointerException {
 
-        submitRequest(context,params,httpPostURL,responseListener,errorListener,-1,isRetryPolicyEnabled);
+        submitRequest(context,params,httpPostURL,responseListener,errorListener,-1,isRetryPolicyEnabled,false);
 
     }
 
+
     /**
+     *
+     * Added : 06/01/2020
+     *
+     * @param context
+     * @param params
+     * @param httpPostURL
+     * @param responseListener
+     * @param errorListener
+     * @param isRetryPolicyEnabled
+     * @param isDebugEnabled
+     * @throws NullPointerException
+     */
+
+
+    public static void submitRequest(Context context, Map<String, String> params, String httpPostURL,
+                                     Response.Listener<JSONObject> responseListener,
+                                     Response.ErrorListener errorListener, boolean isRetryPolicyEnabled,
+                                     boolean isDebugEnabled) throws NullPointerException {
+
+        submitRequest(context,params,httpPostURL,responseListener,errorListener,-1,isRetryPolicyEnabled,isDebugEnabled);
+
+    }
+
+
+    /**
+     *
+     * Updated: 06/01/2020
      *
      * @param context
      * @param params
@@ -137,12 +174,16 @@ public abstract class VolleyPost {
 
     public static void submitRequest(Context context, Map<String, String> params, String httpPostURL,
                               Response.Listener<JSONObject> responseListener,
-                              Response.ErrorListener errorListener, int retryTimeMilliSec, boolean isRetryPolicyEnabled) throws NullPointerException {
+                              Response.ErrorListener errorListener,
+                                     int retryTimeMilliSec,
+                                     boolean isRetryPolicyEnabled,
+                                     boolean isDebugEnabled) throws NullPointerException {
 
 
         VolleyJsonRequest httpRequest = new VolleyJsonRequest(Request.Method.POST, httpPostURL,
                 params, responseListener, errorListener);
 
+        httpRequest.setDebugEnabled(isDebugEnabled);
 
         if(isRetryPolicyEnabled) {
             if(retryTimeMilliSec != -1 ) {
@@ -180,6 +221,8 @@ public abstract class VolleyPost {
 
     /**
      *
+     * Updated : 06/01/2020
+     *
      * @param params
      * @param videoKey
      * @param videoFile
@@ -192,13 +235,15 @@ public abstract class VolleyPost {
                                    File videoFile,
                                    String httpPostURL) throws NullPointerException, IOException {
 
-        submitVideoRequest(_context,params,videoKey,videoFile,httpPostURL,volleyResponseListener,volleyErrorListener,-1,isRetryPolicyEnabled);
+        submitVideoRequest(_context,params,videoKey,videoFile,httpPostURL,volleyResponseListener,volleyErrorListener,-1,isRetryPolicyEnabled,isDebug);
 
     }
 
 
 
     /**
+     *
+     * Updated: 06/01/2020
      *
      * @param params
      * @param videoKey
@@ -215,11 +260,13 @@ public abstract class VolleyPost {
                                    int retryTimeMilliSec ) throws NullPointerException, IOException {
 
 
-        submitVideoRequest(_context,params,videoKey,videoFile,httpPostURL,volleyResponseListener,volleyErrorListener,retryTimeMilliSec,isRetryPolicyEnabled);
+        submitVideoRequest(_context,params,videoKey,videoFile,httpPostURL,volleyResponseListener,volleyErrorListener,retryTimeMilliSec,isRetryPolicyEnabled,isDebug);
 
     }
 
     /**
+     *
+     * Updated: 06/01/2020
      *
      * @param context
      * @param params
@@ -239,11 +286,15 @@ public abstract class VolleyPost {
                               Response.ErrorListener errorListener) throws NullPointerException, IOException {
 
 
-        submitVideoRequest(context,params,videoKey,videoFile,httpPostURL,responseListener,errorListener,-1,true);
+        submitVideoRequest(context,params,videoKey,videoFile,httpPostURL,responseListener,errorListener,-1,true,false);
 
     }
 
+
+
+
     /**
+     * Updated: 06/01/2020
      *
      * @param context
      * @param params
@@ -266,13 +317,46 @@ public abstract class VolleyPost {
                                           boolean isRetryPolicyEnabled) throws NullPointerException, IOException {
 
 
-        submitVideoRequest(context,params,videoKey,videoFile,httpPostURL,responseListener,errorListener,-1,isRetryPolicyEnabled);
+        submitVideoRequest(context,params,videoKey,videoFile,httpPostURL,responseListener,errorListener,-1,isRetryPolicyEnabled,false);
 
     }
 
 
+    /**
+     * Added: 06/01/2020
+     *
+     * @param context
+     * @param params
+     * @param videoKey
+     * @param videoFile
+     * @param httpPostURL
+     * @param responseListener
+     * @param errorListener
+     * @param isRetryPolicyEnabled
+     * @param isDebugEnabled
+     * @throws NullPointerException
+     * @throws IOException
+     */
+
+    public static void submitVideoRequest(Context context, Map<String, String> params,
+                                          String videoKey,
+                                          File videoFile,
+                                          String httpPostURL,
+                                          Response.Listener<JSONObject> responseListener,
+                                          Response.ErrorListener errorListener,
+                                          boolean isRetryPolicyEnabled,
+                                          boolean isDebugEnabled) throws NullPointerException, IOException {
+
+
+        submitVideoRequest(context,params,videoKey,videoFile,httpPostURL,responseListener,errorListener,-1,isRetryPolicyEnabled,isDebugEnabled);
+
+    }
+
 
     /**
+     *
+     * Updated: 06/01/2020
+     *
      *
      * @param context
      * @param parameters
@@ -290,7 +374,8 @@ public abstract class VolleyPost {
                                     Response.Listener<JSONObject> responseListener,
                                     Response.ErrorListener errorListener,
                                     int retryTimeMilliSec,
-                                           boolean isRetryPolicyEnabled) throws NullPointerException, IOException {
+                                           boolean isRetryPolicyEnabled,
+                                           boolean isDebugEnabled) throws NullPointerException, IOException {
 
         VolleyJsonMultipartRequest volleyJSONMultipartRequest = new VolleyJsonMultipartRequest(Request.Method.POST,
                 httpPostURL,
@@ -315,6 +400,8 @@ public abstract class VolleyPost {
                 return params;
             }
         };
+
+        volleyJSONMultipartRequest.setDebugEnabled(isDebugEnabled);
 
 /*        if(retryTimeMilliSec != -1 ) {
 
